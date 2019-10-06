@@ -2,12 +2,12 @@
   :ensure t
   :init (helm-descbinds-mode))
 
-(use-package wgrep-helm
-  :ensure t
-  :init 
-  (setq wgrep-auto-save-buffer t
-	wgrep-enable-key (kbd "C-x C-q"))
-  (add-hook 'wgrep-setup-hook #'wgrep-change-to-wgrep-mode))
+;; (use-package wgrep-helm
+;;   :ensure t
+;;   :init 
+;;   (setq wgrep-auto-save-buffer t
+;; 	wgrep-enable-key (kbd "C-x C-q"))
+;;   (add-hook 'wgrep-setup-hook #'wgrep-change-to-wgrep-mode))
 
 (helm-mode 1)
 
@@ -24,7 +24,7 @@
       helm-dwim-target 'completion
       helm-echo-input-in-header-line t
       helm-use-frame-when-more-than-two-windows nil
-      helm-grep-save-buffer-name-no-confirm t
+      ; helm-grep-save-buffer-name-no-confirm t
       helm-apropos-fuzzy-match t
       helm-buffers-fuzzy-matching t
       helm-eshell-fuzzy-match t
@@ -116,7 +116,7 @@
 		    :foreground 'unspecified
 		    :weight 'unspecified
 		    :inherit 'helm-buffer-file)
-(set-face-foreground 'helm-grep-finish "#00AA00")
+; (set-face-foreground 'helm-grep-finish "#00AA00")
 
 (defun helm-skip-dots (old-func &rest args)
   (apply old-func args)
