@@ -41,6 +41,8 @@
 (load-user-file "./lisp/apperance.el")
 (load-user-file "./lisp/paredit.el")
 (load-user-file "./lisp/slime.el")
+(load-user-file "./lisp/init-haskell.el")
+(load-user-file "./lisp/flycheck.el")
 (load-user-file "./lisp/julia.el")
 (load-user-file "./lisp/init-python.el")
 (load-user-file "./lisp/helm.el")
@@ -58,7 +60,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-mc zones lua-mode multiple-cursors simple-httpd wgrep-helm w3m use-package paredit org-pdfview org-link-minor-mode org-bullets multi markdown-mode magit-popup htmlize helm-slime helm-descbinds helm-company haskell-mode exwm evil-visual-mark-mode evil-magit evil-commentary elpy doom-themes clang-format))))
+    (flycheck evil-mc zones lua-mode multiple-cursors simple-httpd wgrep-helm w3m use-package paredit org-pdfview org-link-minor-mode org-bullets multi markdown-mode magit-popup htmlize helm-slime helm-descbinds helm-company haskell-mode exwm evil-visual-mark-mode evil-magit evil-commentary elpy doom-themes clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
