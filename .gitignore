@@ -16,3 +16,4 @@ spotify.el
 spotify-emacs.el
 .juliahistory
 .mc-lists.el
+/custom.el

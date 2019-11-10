@@ -53,17 +53,4 @@
 (load-user-file "./lisp/init-org.el")
 (load-user-file "./lisp/spotify.el")
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (flycheck evil-mc zones lua-mode multiple-cursors simple-httpd wgrep-helm w3m use-package paredit org-pdfview org-link-minor-mode org-bullets multi markdown-mode magit-popup htmlize helm-slime helm-descbinds helm-company haskell-mode exwm evil-visual-mark-mode evil-magit evil-commentary elpy doom-themes clang-format))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq custom-file "./custom.el")
