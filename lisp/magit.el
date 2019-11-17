@@ -14,4 +14,5 @@
      (and (not (string-match-p ffap-url-regexp candidate))
 	  helm-ff-default-directory
 	  (locate-dominating-file
-	   helm-ff-default-directory ".git"))) 1))
+	   helm-ff-default-directory ".git")))
+   1))

@@ -47,6 +47,7 @@
 (load-user-file "./lisp/init-python.el")
 (load-user-file "./lisp/helm.el")
 (load-user-file "./lisp/magit.el")
+(load-user-file "./lisp/init-mu4e.el")
 (load-user-file "./lisp/company.el")
 (load-user-file "./lisp/functions.el")
 (load-user-file "./lisp/markdown.el")

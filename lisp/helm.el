@@ -1,3 +1,5 @@
+(require 'helm-config)
+
 (use-package helm-descbinds
   :ensure t
   :init (helm-descbinds-mode))
