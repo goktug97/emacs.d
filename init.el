@@ -36,12 +36,12 @@
   (load-file (expand-file-name file user-init-dir)))
 
 ;; (load-user-file "./lisp/multiple-cursors.el")
+(load-user-file "./lisp/init-haskell.el")
 (load-user-file "./lisp/evil.el")
 (load-user-file "./lisp/font.el")
 (load-user-file "./lisp/apperance.el")
 (load-user-file "./lisp/paredit.el")
 (load-user-file "./lisp/slime.el")
-(load-user-file "./lisp/init-haskell.el")
 (load-user-file "./lisp/flycheck.el")
 (load-user-file "./lisp/julia.el")
 (load-user-file "./lisp/init-python.el")
@@ -55,3 +55,5 @@
 (load-user-file "./lisp/spotify.el")
 
 (setq custom-file "./custom.el")
+
+(setq browse-url-generic-program (executable-find "firefox"))

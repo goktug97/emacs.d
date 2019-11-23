@@ -35,6 +35,11 @@
 		("\\.pdf\\'" . "zathura %s"))
 	      org-file-apps ))
 
+;; pdf-tools-install
+(add-to-list 'org-file-apps 
+	     '("\\.pdf\\'" . (lambda (file link)
+			       (org-pdfview-open link))))
+
 (defun org-screenshot ()
   (interactive)
   (setq filename
