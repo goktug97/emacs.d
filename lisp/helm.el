@@ -91,34 +91,43 @@
 (with-eval-after-load 'man
   (define-key Man-mode-map (kbd "M-s f") 'helm-imenu))
 
-(set-face-attribute 'helm-source-header nil
-		    :inherit 'header-line
-		    :height 'unspecified
-		    :background 'unspecified
-		    :foreground 'unspecified)
-(set-face-background 'helm-selection "#4f4f4f")
-(set-face-background 'helm-visible-mark "#2f2f2f")
-(set-face-foreground 'helm-visible-mark nil)
-(set-face-foreground 'helm-match "red")
-(set-face-attribute 'helm-buffer-file nil
-		    :background 'unspecified
-		    :foreground "white"
-		    :weight 'normal)
-(set-face-attribute 'helm-buffer-directory nil
-		    :background 'unspecified
-		    :foreground "#1e90ff"
-		    :weight 'bold)
-(set-face-attribute 'helm-ff-directory nil
-		    :background 'unspecified
-		    :foreground 'unspecified
-		    :weight 'unspecified
-		    :inherit 'helm-buffer-directory)
-(set-face-attribute 'helm-ff-file nil
-		    :background 'unspecified
-		    :foreground 'unspecified
-		    :weight 'unspecified
-		    :inherit 'helm-buffer-file)
-; (set-face-foreground 'helm-grep-finish "#00AA00")
+
+(defun helm-apperance-config ()
+  (set-face-attribute 'helm-source-header nil
+		      :inherit 'header-line
+		      :height 'unspecified
+		      :background 'unspecified
+		      :foreground 'unspecified)
+  (set-face-background 'helm-selection "#4f4f4f")
+  (set-face-background 'helm-visible-mark "#2f2f2f")
+  (set-face-foreground 'helm-visible-mark nil)
+  (set-face-foreground 'helm-match "red")
+  (set-face-attribute 'helm-buffer-file nil
+		      :background 'unspecified
+		      :foreground "white"
+		      :weight 'normal)
+  (set-face-attribute 'helm-buffer-directory nil
+		      :background 'unspecified
+		      :foreground "#1e90ff"
+		      :weight 'bold)
+  (set-face-attribute 'helm-ff-directory nil
+		      :background 'unspecified
+		      :foreground 'unspecified
+		      :weight 'unspecified
+		      :inherit 'helm-buffer-directory)
+  (set-face-attribute 'helm-ff-file nil
+		      :background 'unspecified
+		      :foreground 'unspecified
+		      :weight 'unspecified
+		      :inherit 'helm-buffer-file)
+  (set-face-foreground 'helm-grep-finish "#00AA00"))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+	      (lambda (frame)
+		(with-selected-frame frame
+		  (helm-apperance-config))))
+  (helm-apperance-config))
 
 (defun helm-skip-dots (old-func &rest args)
   (apply old-func args)

@@ -38,8 +38,6 @@
 ;; (load-user-file "./lisp/multiple-cursors.el")
 (load-user-file "./lisp/init-haskell.el")
 (load-user-file "./lisp/evil.el")
-(load-user-file "./lisp/font.el")
-(load-user-file "./lisp/apperance.el")
 (load-user-file "./lisp/paredit.el")
 (load-user-file "./lisp/slime.el")
 (load-user-file "./lisp/flycheck.el")
@@ -53,6 +51,8 @@
 (load-user-file "./lisp/markdown.el")
 (load-user-file "./lisp/init-org.el")
 (load-user-file "./lisp/spotify.el")
+;; (load-user-file "./lisp/font.el")
+(load-user-file "./lisp/apperance.el")
 
 (setq custom-file "./custom.el")
 

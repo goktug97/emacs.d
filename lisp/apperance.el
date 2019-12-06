@@ -3,7 +3,14 @@
 
 (setq doom-themes-enable-bold t    
       doom-themes-enable-italic t) 
-(load-theme 'doom-molokai t)
+
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+        (lambda (frame)
+            (with-selected-frame frame
+	      (load-theme 'doom-molokai t))))
+    (load-theme 'doom-molokai t))
 (doom-themes-org-config)
 
 (menu-bar-mode -1) 
@@ -16,8 +23,9 @@
 (when (version<= "26.0.50" emacs-version )
   (global-display-line-numbers-mode))
 
+(add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
 (add-to-list 'default-frame-alist
-	     '(vertical-scroll-bars . nil))
+	     '(font . "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
 
 (setq apropos-sort-by-scores t)
 
@@ -31,4 +39,5 @@
 (set-face-foreground 'font-lock-warning-face "Red")
 (set-face-underline 'font-lock-warning-face "Yellow")
 (set-face-attribute 'font-lock-warning-face nil :weight 'bold)
+
 

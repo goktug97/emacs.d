@@ -30,7 +30,7 @@
 (setq evil-default-modeline-color
       (cons (face-background 'mode-line)
 	    (or (face-foreground 'mode-line)
-		"black")))
+		"white")))
 
 (defun evil-color-modeline ()
   (let ((color
@@ -40,10 +40,12 @@
 	   '("#006fa0" . "#ffffff"))
 	  ((evil-emacs-state-p)
 	   '("#444488" . "#ffffff"))
-	  (t evil-default-modeline-color))))
+	   (t evil-default-modeline-color))))
   (set-face-background 'mode-line (car color))
   (set-face-foreground 'mode-line (cdr color))))
+
 (add-hook 'post-command-hook 'evil-color-modeline)
+
 (setq evil-mode-line-format nil)
 
 (use-package evil-collection
