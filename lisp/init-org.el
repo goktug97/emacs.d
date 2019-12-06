@@ -19,6 +19,7 @@
  'org-babel-load-languages
  '((python . t)
    (lisp .t)
+   (shell . t)
    (lua . t)
    (julia . t)))
 
@@ -48,6 +49,7 @@
           (concat (file-name-nondirectory (buffer-file-name))
                   "_imgs/"
                   (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  (sleep-for 0 500)
   (unless (file-exists-p (file-name-directory filename))
     (make-directory (file-name-directory filename)))
       (call-process "maim" nil nil nil "-s" filename)
