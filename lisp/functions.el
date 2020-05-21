@@ -8,3 +8,19 @@
 (defun load-init ()
   (interactive)
   (load-file "~/.emacs.d/init.el"))
+
+(defun delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
+(global-set-key (kbd "C-c D")  #'delete-file-and-buffer)
+
+

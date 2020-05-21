@@ -5,5 +5,6 @@
   (global-company-mode))
 
 (use-package helm-company
+  :after helm
   :ensure t)
 

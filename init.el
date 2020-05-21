@@ -8,8 +8,6 @@
 
 (package-initialize)
 
-(setq ring-bell-function 'ignore)
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -22,38 +20,36 @@
 	 user-init-directory)
 	(t "~/.emacs.d/")))
 
-(setq backup-directory-alist
-      '(("." . "~/.emacs.d/backups"))
-      backup-by-copying      t 
-      version-control        t
-      delete-old-versions    t  
-      kept-new-versions      20 
-      kept-old-versions      5) 
-
 (defun load-user-file (file)
   (interactive "f")
   "Load a file in current user's configuration directory"
   (load-file (expand-file-name file user-init-dir)))
 
-;; (load-user-file "./lisp/multiple-cursors.el")
-(load-user-file "./lisp/init-haskell.el")
+(load-user-file "./lisp/misc.el")
 (load-user-file "./lisp/evil.el")
-(load-user-file "./lisp/paredit.el")
-(load-user-file "./lisp/slime.el")
-(load-user-file "./lisp/flycheck.el")
-(load-user-file "./lisp/julia.el")
-(load-user-file "./lisp/init-python.el")
 (load-user-file "./lisp/helm.el")
-(load-user-file "./lisp/magit.el")
-(load-user-file "./lisp/init-mu4e.el")
-(load-user-file "./lisp/company.el")
-(load-user-file "./lisp/functions.el")
-(load-user-file "./lisp/markdown.el")
 (load-user-file "./lisp/init-org.el")
-(load-user-file "./lisp/spotify.el")
-;; (load-user-file "./lisp/font.el")
 (load-user-file "./lisp/apperance.el")
+(load-user-file "./lisp/paredit.el")
+(load-user-file "./lisp/parens.el")
+(load-user-file "./lisp/slime.el")
+(load-user-file "./lisp/init-eshell.el")
+(load-user-file "./lisp/magit.el")
+(load-user-file "./lisp/company.el")
+(load-user-file "./lisp/markdown.el")
+(load-user-file "./lisp/window.el")
+(load-user-file "./lisp/init-python.el")
+(load-user-file "./lisp/functions.el")
+(load-user-file "./lisp/brain.el")
 
-(setq custom-file "./custom.el")
-
-(setq browse-url-generic-program (executable-find "firefox"))
+;; (load-user-file "./lisp/multiple-cursors.el")
+;; (load-user-file "./lisp/init-haskell.el")
+;; (load-user-file "./lisp/flycheck.el")
+;; (load-user-file "./lisp/julia.el")
+;; (load-user-file "./lisp/init-eaf.el")
+;; (load-user-file "./lisp/init-mu4e.el")
+;; (load-user-file "./lisp/spotify.el")
+;; (load-user-file "./lisp/godot-gdscript.el")
+;; (load-user-file "./lisp/init-ibuffer.el")
+;; (load-user-file "./lisp/init-vterm.el")
+;; (load-user-file "./lisp/font.el")

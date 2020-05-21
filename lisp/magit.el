@@ -2,6 +2,7 @@
   :ensure t)
 
 (use-package evil-magit
+  :after evil
   :ensure t)
 
 (defmethod helm-setup-user-source ((source helm-source-ffiles))

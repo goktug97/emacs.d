@@ -2,22 +2,32 @@
   :ensure t
   :init 
   (setq evil-search-module 'evil-search
-	evil-cross-lines t
-	evil-move-beyond-eol t
-	evil-move-cursor-back nil
-	evil-want-fine-undo t
-	evil-ex-complete-emacs-commands nil
-	evil-vsplit-window-right t
-	evil-split-window-below t
-	evil-shift-round nil
-	evil-want-C-u-scroll t
-	evil-want-integration t
-	evil-want-keybinding nil)
+        evil-cross-lines t
+        evil-move-beyond-eol t
+        evil-move-cursor-back nil
+        evil-want-fine-undo t
+        evil-ex-complete-emacs-commands nil
+        evil-vsplit-window-right t
+        evil-split-window-below t
+        evil-shift-round nil
+        evil-want-C-u-scroll t
+        evil-want-integration t
+        evil-want-keybinding nil)
   (setq-default evil-symbol-word-search t)
   :config 
-  (evil-mode 1))
+  (evil-mode 1)
+  (evil-set-initial-state 'term-mode 'emacs)
+  (setq evil-mode-line-format nil)
+  (setq evil-default-modeline-color
+        (cons (face-background 'mode-line)
+              (or (face-foreground 'mode-line)
+                  "white"))))
 
-(evil-set-initial-state 'term-mode 'emacs)
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
 
 ;; Go-to-definition
 (evil-global-set-key
@@ -26,11 +36,6 @@
    (evil-execute-in-emacs-state)
    (call-interactively (key-binding
 			(kbd "M-.")))))
-
-(setq evil-default-modeline-color
-      (cons (face-background 'mode-line)
-	    (or (face-foreground 'mode-line)
-		"white")))
 
 (defun evil-color-modeline ()
   (let ((color
@@ -46,10 +51,3 @@
 
 (add-hook 'post-command-hook 'evil-color-modeline)
 
-(setq evil-mode-line-format nil)
-
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
