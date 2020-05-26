@@ -14,9 +14,10 @@
                ("C-c n g" . org-roam-show-graph)
                ("C-c n r" . org-roam-db-build-cache))
               :map org-mode-map
-              (("C-c n i" . org-roam-insert)))
-  :config
-  (require 'org-roam-protocol))
+              (("C-c n i" . org-roam-insert))))
+
+(use-package org-roam-protocol
+  :after org-protocol)
 
 (use-package org-roam-server
   :ensure nil
@@ -26,6 +27,11 @@
 ;; (use-package org-roam-server
 ;;   :after org-roam
 ;;   :ensure t)
+
+(use-package company-org-roam
+  :ensure t
+  :after org-roam
+  :config (push 'company-org-roam company-backends))
 
 (use-package org-journal
   :ensure t
@@ -44,8 +50,10 @@
   :config
   (setq org-ref-default-bibliography '("/home/goktug/bibliography/brain.bib")
         org-ref-pdf-directory "/home/goktug/bibliography/"
+        bibtex-completion-notes-path "/home/goktug/Brain/"
         bibtex-completion-bibliography "/home/goktug/bibliography/brain.bib"
         bibtex-completion-library-path "/home/goktug/bibliography"
+        bibtex-completion-pdf-field "file"
         bibtex-completion-pdf-open-function 'org-open-file))
 
 (use-package helm-bibtex
@@ -53,8 +61,41 @@
 
 (use-package org-roam-bibtex
   :ensure t
-  :after org-roam
-  :hook (org-roam-mode . org-roam-bibtex-mode))
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :bind (:map org-mode-map
+              (("C-c n a" . orb-note-actions)))
+  :config
+  (setq orb-preformat-keywords
+        '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "${slug}"
+           :head "#+TITLE: ${title}\n#+ROAM_KEY: ${ref}
+
+- tags ::
+- keywords :: ${keywords}
+
+* ${title}
+:PROPERTIES:
+:Custom_ID: ${citekey}
+:URL: ${url}
+:AUTHOR: ${author-or-editor}
+:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+:NOTER_PAGE:
+:END:"))))
+
+(use-package org-noter
+  :after org
+  :ensure t
+  :bind (:map org-noter-doc-mode-map
+              (("C-c i" . org-noter-insert-note)))
+  :config
+  (setq
+   org-noter-always-create-frame nil
+   org-noter-hide-other nil
+   org-noter-doc-split-fraction '(0.7 0.3)
+   org-noter-notes-search-path (list "~/Brain/")))
 
 ;; Agenda 
 (defun org-skip-subtree-if-priority (priority)
