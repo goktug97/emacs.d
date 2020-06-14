@@ -1,12 +1,15 @@
 (use-package emacsql-sqlite
   :ensure t)
 
+(use-package emacsql-sqlite3
+  :ensure t)
+
 (use-package org-roam
   :after org
-  ;; :ensure nil
-  :ensure t
+  :ensure nil
+  ;; :ensure t
   :hook (after-init . org-roam-mode)
-  ;; :load-path "~/libraries/org-roam"
+  :load-path "~/libraries/org-roam"
   :custom (org-roam-directory "~/Brain/")
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
@@ -16,13 +19,14 @@
               :map org-mode-map
               (("C-c n i" . org-roam-insert))))
 
-(use-package org-roam-protocol
-  :after org-protocol)
+(require 'org-roam-protocol)
 
 (use-package org-roam-server
   :ensure nil
+  :config
+  (setq org-roam-server-authenticate nil)
   :after org-roam
-  :load-path "~/libraries/org-roam-graph-server/")
+  :load-path "~/libraries/org-roam-server/")
 
 ;; (use-package org-roam-server
 ;;   :after org-roam

@@ -1,6 +1,6 @@
 (use-package evil
   :ensure t
-  :init 
+  :init
   (setq evil-search-module 'evil-search
         evil-cross-lines t
         evil-move-beyond-eol t
@@ -14,7 +14,7 @@
         evil-want-integration t
         evil-want-keybinding nil)
   (setq-default evil-symbol-word-search t)
-  :config 
+  :config
   (evil-mode 1)
   (evil-set-initial-state 'term-mode 'emacs)
   (setq evil-mode-line-format nil)
@@ -50,4 +50,3 @@
   (set-face-foreground 'mode-line (cdr color))))
 
 (add-hook 'post-command-hook 'evil-color-modeline)
-

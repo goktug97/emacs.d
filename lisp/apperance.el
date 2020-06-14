@@ -29,15 +29,14 @@
 
 (use-package doom-themes
   :ensure t
-  :after org
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (doom-themes-org-config)
+  (eval-after-load "org"
+    (doom-themes-org-config))
   (if (daemonp)
       (add-hook 'after-make-frame-functions
                 (lambda (frame)
                   (with-selected-frame frame
                     (load-theme 'doom-molokai t))))
     (load-theme 'doom-molokai t)))
-
