@@ -23,10 +23,16 @@
 
 (use-package org-roam-server
   :ensure nil
-  :config
-  (setq org-roam-server-authenticate nil)
   :after org-roam
   :load-path "~/libraries/org-roam-server/")
+
+;; ;; For Testing
+;; (use-package org-roam-server
+;;   :ensure nil
+;;   :config
+;;   (setq org-roam-server-authenticate nil)
+;;   :after org-roam
+;;   :load-path "/tmp/org-roam-server/")
 
 ;; (use-package org-roam-server
 ;;   :after org-roam
