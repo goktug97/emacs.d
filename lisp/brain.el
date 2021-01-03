@@ -1,7 +1,13 @@
+(use-package emacsql
+  :ensure t)
+
 (use-package emacsql-sqlite
   :ensure t)
 
 (use-package emacsql-sqlite3
+  :ensure t)
+
+(use-package simple-httpd
   :ensure t)
 
 (use-package org-roam
@@ -9,8 +15,14 @@
   :ensure nil
   ;; :ensure t
   :hook (after-init . org-roam-mode)
+  :config (setq org-roam-db-location "~/Brain/org-roam.db")
   :load-path "~/libraries/org-roam"
   :custom (org-roam-directory "~/Brain/")
+  ;; :config 
+  ;; (setq org-roam-buffer-prepare-hook '(org-roam-buffer--insert-title
+  ;;                                      ;; org-roam-buffer--insert-backlinks
+  ;;                                      ;; org-roam-buffer--insert-ref-links
+  ;;                                      ))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
@@ -26,12 +38,11 @@
   :after org-roam
   :load-path "~/libraries/org-roam-server/")
 
-;; ;; For Testing
+;; For Testing
 ;; (use-package org-roam-server
 ;;   :ensure nil
-;;   :config
-;;   (setq org-roam-server-authenticate nil)
 ;;   :after org-roam
+;;   :config
 ;;   :load-path "/tmp/org-roam-server/")
 
 ;; (use-package org-roam-server
@@ -180,11 +191,16 @@
                   (insert "\n\n")))))))
     (buffer-string)))
 
-  (defun my/org-export-preprocessor (backend)
+(defun my/org-export-preprocessor (backend)
+  (when (buffer-file-name)
     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
       (unless (string= links "")
         (save-excursion
           (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
+          (insert (concat "\n* Backlinks\n") links))))))
 
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+(defun insert-bib-note ()
+  (interactive)
+  (orb-notes-fn (read-string "Cite Key: ")))
+
+(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)

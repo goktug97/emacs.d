@@ -1,7 +1,7 @@
 (use-package org
   :ensure t
   :config
-  (require 'org-tempo)
+  ;; (require 'org-tempo)
   (setq org-startup-with-inline-images t
         org-hide-emphasis-markers t
         org-src-fontify-natively t
@@ -17,18 +17,22 @@
      (lisp .t)
      (shell . t))))
 
+(use-package org-tempo
+  :ensure nil
+  :after org)
+
 (use-package pdf-tools
   :ensure t
   :config
   (setq-default pdf-view-display-size 'fit-page)
   (pdf-tools-install))
 
-(use-package org-pdfview
-  :ensure t
-  :after org
-  :config 
-  (add-to-list
-   'org-file-apps '("\\.pdf\\'" . (lambda (file link) (org-pdfview-open link)))))
+;; (use-package org-pdfview
+;;   :ensure t
+;;   :after org
+;;   :config
+;;   (add-to-list
+;;    'org-file-apps '("\\.pdf\\'" . (lambda (file link) (org-pdfview-open link)))))
 
 (use-package org-bullets
   :ensure t
@@ -47,7 +51,7 @@
   (sleep-for 0 500)
   (unless (file-exists-p (file-name-directory filename))
     (make-directory (file-name-directory filename)))
-      (call-process "maim" nil nil nil "-s" filename)
+  (call-process "maim" nil nil nil "-s" filename)
   (if (file-exists-p filename)
       (insert (concat "[[file:" filename "]]")))
   (org-redisplay-inline-images))
@@ -58,8 +62,17 @@
   (if (org-in-regexp org-bracket-link-regexp 1)
       (save-excursion
         (let ((remove (list (match-beginning 0) (match-end 0)))
-              (description (if (match-end 3) 
+              (description (if (match-end 3)
                                (org-match-string-no-properties 3)
-                             (org-match-string-no-properties 1))))
+                             (org-match-string-no-properties 2))))
           (apply 'delete-region remove)
           (insert description)))))
+
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))

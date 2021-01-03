@@ -30,12 +30,12 @@
   (evil-collection-init))
 
 ;; Go-to-definition
-(evil-global-set-key
- 'normal "gd"
- (lambda () (interactive)
-   (evil-execute-in-emacs-state)
-   (call-interactively (key-binding
-			(kbd "M-.")))))
+;; (evil-global-set-key
+;;  'normal "gd"
+;;  (lambda () (interactive)
+;;    (evil-execute-in-emacs-state)
+;;    (call-interactively (key-binding
+;; 			(kbd "M-.")))))
 
 (defun evil-color-modeline ()
   (let ((color

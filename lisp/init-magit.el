@@ -1,8 +1,17 @@
 (use-package magit
+  :after evil
+  :ensure t)
+
+(use-package transient
+  :after magit
   :ensure t)
 
 (use-package evil-magit
-  :after evil
+  :after transient
+  :ensure t)
+
+(use-package magit-todos
+  :after magit
   :ensure t)
 
 (defmethod helm-setup-user-source ((source helm-source-ffiles))
