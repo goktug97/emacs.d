@@ -5,7 +5,6 @@
 (show-paren-mode t) 
 (fset `yes-or-no-p `y-or-n-p)
 (setq-default indent-tabs-mode nil)
-(setq inhibit-startup-screen t)
 (setq apropos-sort-by-scores t)
 
 (when (version<= "26.0.50" emacs-version )
@@ -14,18 +13,6 @@
 (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
 (add-to-list 'default-frame-alist
 	     '(font . "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
-
-(add-hook 'prog-mode-hook
-          #'(lambda ()
-              (font-lock-add-keywords
-               nil
-               '(("\\<\\(FIXME\\|TODO\\|BUG\\|NOTE\\):"
-                  1 font-lock-warning-face
-                  t)))))
-
-(set-face-foreground 'font-lock-warning-face "Green")
-(set-face-underline 'font-lock-warning-face "Orange")
-(set-face-attribute 'font-lock-warning-face nil :weight 'bold)
 
 (use-package doom-themes
   :ensure t
@@ -40,3 +27,15 @@
                   (with-selected-frame frame
                     (load-theme 'doom-molokai t))))
     (load-theme 'doom-molokai t)))
+
+(use-package fic-mode
+   :straight nil
+   :config
+   (add-to-list 'fic-highlighted-words "NOTE")
+      (set-face-attribute 'font-lock-fic-face nil :weight 'bold)
+   (add-hook 'prog-mode-hook 'turn-on-fic-mode)
+   :init 
+    (setq 
+      fic-background-color nil
+      fic-foreground-color "Orange"))
+

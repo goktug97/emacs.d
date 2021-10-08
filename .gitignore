@@ -17,3 +17,8 @@ spotify-emacs.el
 .juliahistory
 .mc-lists.el
 custom.el
+/elpy/
+/eaf/
+/bookmarks
+/request/
+/spell-fu/
