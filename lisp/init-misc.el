@@ -85,6 +85,7 @@
    "SPC" '(switch-to-previous-buffer :which-key "Toggle Buffer")
    "t" '(treemacs-select-window :which-key "Treemacs")
    "s" '(hydra-smartparens/body :which-key "Smartparens")
+   "w" '(hydra-perspective-with-helm :which-key "Perspective")
    "m" '(hydra-move/body :which-key "Move words")
    "b" '(helm-mini :which-key "Buffers")
    "p" '(hydra-projectile-with-helm :which-key "Project")
@@ -96,7 +97,11 @@
     (defun hydra-projectile-with-helm ()
       (interactive)
       (require 'helm)
-      (hydra-projectile/body)))
+      (hydra-projectile/body))
+    (defun hydra-perspective-with-helm ()
+      (interactive)
+      (require 'helm)
+      (hydra-persp/body)))
 
 (use-package ace-window
   :defer t
@@ -158,6 +163,12 @@
   :config
   (setq projectile-completion-system 'helm)
   (setq projectile-indexing-method 'alien))
+
+(use-package perspective
+  :after helm
+  :config
+  (setq persp-sort 'created)
+  (persp-mode))
 
 (use-package ag
   :defer t
@@ -262,6 +273,22 @@
     ("S" sp-backward-slurp-sexp "Backward Slurp")
     ("b" sp-forward-barf-sexp "Forward Barf")
     ("B" sp-backward-barf-sexp "Backward Bard")
+    ("q" nil))
+  (defhydra hydra-persp (:color blue :columns 3)
+    "Perspective"
+    ("s" persp-switch "Switch")
+    ("`" persp-switch-by-number "Switch by number")
+    ("k" persp-remove-buffer "Remove buffer")
+    ("c" persp-kill "Kill")
+    ("r" persp-rename "Rename")
+    ("a" persp-add-buffer "Add buffer")
+    ("A" persp-set-buffer "Set buffer")
+    ("b" persp-switch-to-buffer "Switch (all buffers)")
+    ("i" persp-import "Import")
+    ("n" persp-next "Next" :color red)
+    ("p" persp-prev "Prev" :color red)
+    ("S" persp-state-save "Save")
+    ("L" persp-state-load "Load")
     ("q" nil)))
 
 (use-package move-text
