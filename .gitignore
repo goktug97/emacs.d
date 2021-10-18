@@ -22,3 +22,11 @@ custom.el
 /bookmarks
 /request/
 /spell-fu/
+.cache/
+.lsp*
+*org*
+custom.el~
+*_bak
+projectile*
+straight
+speed-type

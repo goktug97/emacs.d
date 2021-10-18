@@ -28,6 +28,12 @@
                     (load-theme 'doom-molokai t))))
     (load-theme 'doom-molokai t)))
 
+(use-package doom-modeline
+  :defer t
+  :after doom-themes
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
 (use-package fic-mode
    :straight nil
    :config

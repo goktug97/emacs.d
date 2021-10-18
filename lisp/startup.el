@@ -82,6 +82,7 @@
 (advice-add #'package--ensure-init-file :override #'ignore)
 
 ;; all-the-icons for the dashboard
+;; M-x all-the-icons-install-fonts
 (use-package all-the-icons
   :defer t
   :ensure t)

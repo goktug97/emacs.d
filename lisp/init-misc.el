@@ -11,6 +11,7 @@
         evil-split-window-below t
         evil-shift-round nil
         evil-want-C-u-scroll t
+        evil-want-C-i-jump nil
         evil-want-integration t
         evil-want-keybinding nil)
   (setq-default evil-symbol-word-search t)
@@ -100,14 +101,20 @@
    :no-autoload t
    :non-normal-prefix "M-SPC"
    "SPC" '(switch-to-previous-buffer :which-key "Toggle Buffer")
-   "t" '(hydra-move/body :which-key "Move words")
-   "b" '(hydra-buffer/body :which-key "Buffer")
-   "p" '(hydra-projectile/body :which-key "Project")
+   "t" '(treemacs-select-window :which-key "Treemacs")
+   "s" '(hydra-smartparens/body :which-key "Smartparens")
+   "m" '(hydra-move/body :which-key "Move words")
+   "b" '(helm-mini :which-key "Buffers")
+   "p" '(hydra-projectile-with-helm :which-key "Project")
    "f" '(helm-find-files :which-key "Find Files"))
   :preface
     (defun switch-to-previous-buffer ()
       (interactive)
-      (switch-to-buffer (other-buffer (current-buffer) 1))))
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
+    (defun hydra-projectile-with-helm ()
+      (interactive)
+      (require 'helm)
+      (hydra-projectile/body)))
 
 (use-package ace-window
   :defer t
@@ -161,6 +168,7 @@
        "C-r" 'undo-fu-only-redo))
 
 (use-package projectile
+  :after helm
   :defer t
   :ensure t
   :init
@@ -259,7 +267,20 @@
     ("w" transpose-words "Transpose Words")
     ("u" move-text-up "Move Text Up")
     ("d" move-text-down "Move Text Down"))
-  )
+  (defhydra hydra-smartparens (:columns 3 :hint nil)
+    "Smartparens"
+    ("(" (sp-wrap-with-pair "(") "Braces")
+    ("{" (sp-wrap-with-pair "{") "Curly Braces")
+    ("'" (sp-wrap-with-pair "'") "Apostrophe")
+    ("\"" (sp-wrap-with-pair "\"") "Quote")
+    ("w" (sp-wrap-with-pair "(") "Wrap")
+    ("W" sp-unwrap-sexp "Unwrap")
+    ("u" undo-fu-only-undo "Undo")
+    ("s" sp-forward-slurp-sexp "Forward Slurp")
+    ("S" sp-backward-slurp-sexp "Backward Slurp")
+    ("b" sp-forward-barf-sexp "Forward Barf")
+    ("B" sp-backward-barf-sexp "Backward Bard")
+    ("q" nil)))
 
 (use-package move-text
   :defer t
@@ -289,9 +310,7 @@
     (setq org-latex-pdf-process
           '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
             "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-    )
-  )
+            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))))
 
 (use-package ob-python
   :straight nil
@@ -318,6 +337,11 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(use-package anki-editor
+  :after org
+  :ensure t
+  :defer t)
+
 (use-package pdf-tools
   :defer t
   :ensure t
@@ -335,12 +359,16 @@
   :config
   (setq avy-background t))
 
+(straight-use-package 'prescient)
+(straight-use-package 'company-prescient)
+
 (use-package company
   :defer t
   :ensure t
   :init
   (setq company-idle-delay 0.3)
-  (global-company-mode))
+  (global-company-mode)
+  (company-prescient-mode))
 
 (use-package magit
   :after evil
@@ -373,7 +401,9 @@
 
 (use-package restart-emacs
   :defer t
-  :ensure t)
+  :ensure t
+  :config
+  (setq restart-emacs-restore-frames t))
 
 (use-package diminish
   :defer t
@@ -392,6 +422,50 @@
   :ensure t
   :config
   (diminish 'evil-smartparens-mode))
+
+;; (use-package evil-surround
+;;   :ensure t
+;;   :config
+;;   (global-evil-surround-mode 1))
+
+;; (use-package paredit
+;;   :bind (:map paredit-mode-map
+;;               ("C-M-h" . paredit-forward-barf-sexp)
+;;               ("C-M-l" . paredit-forward-slurp-sexp))
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (autoload 'enable-paredit-mode "paredit" t)
+;;   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+;;   (add-hook 'eval-expression-minibuffer-setup-hook
+;;             #'enable-paredit-mode)
+;;   (add-hook 'ielm-mode-hook #'enable-paredit-mode)
+;;   (add-hook 'lisp-mode-hook #'enable-paredit-mode)
+;;   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode))
+
+(use-package treemacs
+  :defer t
+  :ensure t)
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+(use-package speed-type
+  :ensure t
+  :defer t)
+
+(eval-after-load 'python
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -i"))
 
 ;; Functions
 (defun remote-connect ()
