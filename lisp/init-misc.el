@@ -17,25 +17,7 @@
   (setq-default evil-symbol-word-search t)
   :config
   (evil-mode 1)
-  (evil-set-initial-state 'term-mode 'emacs)
-  (setq evil-mode-line-format nil)
-  (setq evil-default-modeline-color
-        (cons (face-background 'mode-line)
-              (or (face-foreground 'mode-line)
-                  "white")))
-  (add-hook 'post-command-hook 'evil-color-modeline)
-  :preface
-  (defun evil-color-modeline ()
-    (let ((color
-       (cond
-        ((minibufferp) evil-default-modeline-color)
-        ((evil-insert-state-p)
-         '("#006fa0" . "#ffffff"))
-        ((evil-emacs-state-p)
-         '("#444488" . "#ffffff"))
-         (t evil-default-modeline-color))))
-    (set-face-background 'mode-line (car color))
-    (set-face-foreground 'mode-line (cdr color)))))
+  (evil-set-initial-state 'term-mode 'emacs))
 
 (use-package evil-collection
   :after evil
