@@ -530,6 +530,11 @@
   :after (treemacs magit)
   :ensure t)
 
+(use-package treemacs-perspective
+  :after (treemacs persp-mode)
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
+
 (use-package speed-type
   :ensure t
   :defer t)
