@@ -1,3 +1,64 @@
+;; Install straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(use-package straight
+             :custom (straight-use-package-by-default t))
+
+(setq package-enable-at-startup nil
+      package-user-dir (concat user-init-dir "elpa/")
+      package-gnupghome-dir (expand-file-name "gpg" package-user-dir)
+      package-archives
+        (list (cons "gnu"   "http://elpa.gnu.org/packages/")
+              (cons "melpa" "http://melpa.org/packages/")
+              (cons "org"   "http://orgmode.org/elpa/")))
+
+(advice-add #'package--ensure-init-file :override #'ignore)
+
+;; M-x all-the-icons-install-fonts
+(use-package all-the-icons
+  :defer t
+  :ensure t)
+
+(use-package dashboard
+  :init
+    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-items '()))
+
+(use-package doom-themes
+  :ensure t
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (eval-after-load "org"
+    (doom-themes-org-config))
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame
+                    (load-theme 'doom-molokai t))))
+    (load-theme 'doom-molokai t)))
+
+(use-package doom-modeline
+  :defer t
+  :after doom-themes
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
 (use-package evil
   :ensure t
   :init
@@ -86,6 +147,7 @@
    "t" '(treemacs-select-window :which-key "Treemacs")
    "s" '(hydra-smartparens/body :which-key "Smartparens")
    "w" '(hydra-perspective-with-helm :which-key "Perspective")
+   "g" '(magit :which-key "Magit")
    "m" '(hydra-move/body :which-key "Move words")
    "b" '(helm-mini :which-key "Buffers")
    "p" '(hydra-projectile-with-helm :which-key "Project")
@@ -386,17 +448,17 @@
 
 (use-package transient
   :after magit
-  :defer t
   :ensure t)
 
-(use-package evil-magit
-  :after transient
-  :defer t
-  :ensure t)
+(use-package hl-todo
+  :ensure t
+  :init
+  (global-hl-todo-mode))
 
 (use-package magit-todos
   :after magit
-  :defer t
+  :config
+  (magit-todos-mode +1)
   :ensure t)
 
 (use-package markdown-mode

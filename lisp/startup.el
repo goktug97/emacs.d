@@ -53,53 +53,18 @@
 (unless (eq system-type 'darwin) (setq command-line-ns-option-alist nil))
 (unless (eq system-type 'gnu/linux) (setq command-line-x-option-alist nil))
 
-;; Install straight.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+(menu-bar-mode -1) 
+(toggle-scroll-bar -1) 
+(tool-bar-mode -1) 
+(delete-selection-mode 1)
+(show-paren-mode t) 
+(fset `yes-or-no-p `y-or-n-p)
+(setq-default indent-tabs-mode nil)
+(setq apropos-sort-by-scores t)
 
-(straight-use-package 'use-package)
-(use-package straight
-             :custom (straight-use-package-by-default t))
+(when (version<= "26.0.50" emacs-version )
+  (global-display-line-numbers-mode))
 
-(setq package-enable-at-startup nil
-      package-user-dir (concat user-init-dir "elpa/")
-      package-gnupghome-dir (expand-file-name "gpg" package-user-dir)
-      package-archives
-        (list (cons "gnu"   "http://elpa.gnu.org/packages/")
-              (cons "melpa" "http://melpa.org/packages/")
-              (cons "org"   "http://orgmode.org/elpa/")))
-
-(advice-add #'package--ensure-init-file :override #'ignore)
-
-;; all-the-icons for the dashboard
-;; M-x all-the-icons-install-fonts
-(use-package all-the-icons
-  :defer t
-  :ensure t)
-
-(use-package dashboard
-  :init
-    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-  :config
-  (dashboard-setup-startup-hook)
-  ;; (setq dashboard-projects-backend `projectile)
-  ;; (setq dashboard-set-heading-icons t)
-  ;; (setq dashboard-set-file-icons t)
-  ;; (setq dashboard-set-navigator t)
-  (setq dashboard-set-init-info t)
-  (setq dashboard-items '(;; (recents  . 5)
-                          ;; (bookmarks . 5)
-                          ;; (projects . 5)
-                          ;; (registers . 5)
-                          )))
-
+(add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+(add-to-list 'default-frame-alist
+	     '(font . "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
