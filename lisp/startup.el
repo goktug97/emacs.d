@@ -32,6 +32,7 @@
       inhibit-startup-message t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
+      ring-bell-function 'ignore
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
@@ -67,4 +68,6 @@
 
 (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
 (add-to-list 'default-frame-alist
-	     '(font . "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+ 	     '(font . "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+	     ; '(font . "-*-Iosevka-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+	     ; '(font . "-*-Terminus-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))

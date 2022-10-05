@@ -144,6 +144,7 @@
    :no-autoload t
    :non-normal-prefix "M-SPC"
    "SPC" '(switch-to-previous-buffer :which-key "Toggle Buffer")
+   "a" '(hydra-gtd/body :which-key "GTD")
    "t" '(treemacs-select-window :which-key "Treemacs")
    "s" '(hydra-smartparens/body :which-key "Smartparens")
    "w" '(hydra-perspective-with-helm :which-key "Perspective")
@@ -334,7 +335,7 @@
     ("s" sp-forward-slurp-sexp "Forward Slurp")
     ("S" sp-backward-slurp-sexp "Backward Slurp")
     ("b" sp-forward-barf-sexp "Forward Barf")
-    ("B" sp-backward-barf-sexp "Backward Bard")
+    ("B" sp-backward-barf-sexp "Backward Barf")
     ("q" nil))
   (defhydra hydra-persp (:color blue :columns 3)
     "Perspective"
@@ -351,7 +352,23 @@
     ("p" persp-prev "Prev" :color red)
     ("S" persp-state-save "Save")
     ("L" persp-state-load "Load")
-    ("q" nil)))
+    ("q" nil))
+  (defhydra hydra-org-clock (:color blue)
+    "Org Clock"
+    ("i" org-clock-in "Clock In")
+    ("o" org-clock-out "Clock Out"))
+  (defhydra hydra-org-timestamp (:color blue)
+    ("p" org-time-stamp "Plain")
+    ("s" org-schedule "Scheduled")
+    ("d" org-deadline "Deadline")
+    ("i" org-time-stamp-inactive "Inactive"))
+  (defhydra hydra-gtd (:color blue)
+    "GTD"
+    ("a" org-agenda "Agenda")
+    ("c" org-capture "Capture")
+    ("C" hydra-org-clock/body "Org Clock")
+    ("t" hydra-org-timestamp/body "Timestamp"))
+  )
 
 (use-package move-text
   :defer t
@@ -368,10 +385,68 @@
         org-src-preserve-indentation t
         org-confirm-babel-evaluate nil
         org-return-follows-link t
-        org-startup-truncated nil)
+        org-startup-truncated nil
+        org-directory "~/goktug/org/"
+        org-agenda-hide-tags-regexp "."
+        org-log-done 'time
+        org-use-fast-todo-selection t
+        )
+  (setq org-agenda-files
+        (mapcar 'file-truename
+                (file-expand-wildcards (concat org-directory "*.org"))))
+  (setq org-refile-targets
+        '(("projects.org" :regexp . "\\(?:\\(?:Note\\|Task\\)s\\)"))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil
+        )
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-12:c%?-12t% s")
+          (todo   . " %i %-12:c")
+          (tags   . " %i %-12:c")
+          (search . " %i %-12:c")))
+  (setq org-agenda-custom-commands
+        '(("g" "Get Things Done (GTD)"
+           ((agenda ""
+                    ((org-agenda-skip-function
+                      '(org-agenda-skip-entry-if 'deadline))
+                     (org-deadline-warning-days 0)))
+            (todo "NEXT"
+                  ((org-agenda-skip-function
+                    '(org-agenda-skip-entry-if 'deadline))
+                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                   (org-agenda-overriding-header "\nTasks\n")))
+            (agenda nil
+                    ((org-agenda-entry-types '(:deadline))
+                     (org-agenda-format-date "")
+                     (org-deadline-warning-days 7)
+                     ; (org-agenda-skip-function
+                     ;  '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))
+                     (org-agenda-overriding-header "\nDeadlines")))
+            (tags-todo "inbox"
+                       ((org-agenda-prefix-format "  %?-12t% s")
+                        (org-agenda-overriding-header "\nInbox\n")))
+            (tags "CLOSED>=\"<today>\""
+                  ((org-agenda-overriding-header "\nCompleted today\n")))))))
+  (setq org-capture-templates
+        `(("i" "Inbox" entry  (file "inbox.org")
+           ,(concat "* TODO %?\n"
+                    "/Entered on/ %U"))
+          ("m" "Meeting" entry  (file+headline "agenda.org" "Future")
+           ,(concat "* %? :meeting:\n"
+                    "<%<%Y-%m-%d %a %H:00>>"))
+          ))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)")))
   (setcar (nthcdr 4 org-emphasis-regexp-components) 20)
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
+  (make-directory org-directory t)
+  (unless (file-exists-p (concat org-directory "inbox.org"))
+    (copy-file (concat user-init-dir "lisp/files/inbox.org") org-directory))
+  (unless (file-exists-p (concat org-directory "agenda.org"))
+    (copy-file (concat user-init-dir "lisp/files/agenda.org") org-directory))
+  (unless (file-exists-p (concat org-directory "projects.org"))
+    (copy-file (concat user-init-dir "lisp/files/projects.org") org-directory))
   (use-package ox-latex
     :straight nil
     :ensure nil
@@ -381,7 +456,48 @@
     (setq org-latex-pdf-process
           '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
             "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))))
+            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
+  :preface
+  (defun org-capture-inbox ()
+    (interactive)
+    ;;(call-interactively 'org-store-link)
+    (org-capture nil "i"))
+  (defun my/delete-capture-frame (&rest _)
+    (if (equal "capture" (frame-parameter nil 'name))
+        (delete-frame)))
+  (advice-add 'org-capture-finalize :after #'my/delete-capture-frame)
+  (defun my/org-capture-frame ()
+    (interactive)
+    (require 'cl-lib)
+    (select-frame-by-name "capture")
+    (delete-other-windows)
+    (cl-letf (((symbol-function 'switch-to-buffer-other-window) #'switch-to-buffer))
+      (condition-case err
+          (org-capture)
+        (user-error (when (string= (cadr err) "Abort")
+                      (delete-frame))))))
+  (defun log-todo-next-creation-date (&rest ignore)
+    "Log NEXT creation time in the property drawer under the key 'ACTIVATED'"
+    (when (and (string= (org-get-todo-state) "NEXT")
+               (not (org-entry-get nil "ACTIVATED")))
+      (org-entry-put nil "ACTIVATED" (format-time-string "[%Y-%m-%d]"))))
+  (add-hook 'org-after-todo-state-change-hook #'log-todo-next-creation-date)
+  ;; Save the corresponding buffers
+  (defun gtd-save-org-buffers ()
+    "Save `org-agenda-files' buffers without user confirmation.
+See also `org-save-all-org-buffers'"
+    (interactive)
+    (message "Saving org-agenda-files buffers...")
+    (save-some-buffers t (lambda ()
+                           (when (member (buffer-file-name) org-agenda-files)
+                             t)))
+    (message "Saving org-agenda-files buffers... done"))
+
+  ;; Add it after refile
+  (advice-add 'org-refile :after
+              (lambda (&rest _)
+                (gtd-save-org-buffers)))
+  )
 
 (use-package ob-python
   :straight nil
@@ -407,11 +523,6 @@
   :after org
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(use-package anki-editor
-  :after org
-  :ensure t
-  :defer t)
 
 (use-package pdf-tools
   :defer t
@@ -485,8 +596,13 @@
   :config
   (use-package smartparens-config
     :straight nil)
+  (setq sp-python-insert-colon-in-function-definitions nil)
   (add-hook 'prog-mode-hook #'smartparens-mode)
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+  :bind (:map smartparens-mode-map
+              ("M-l" . sp-forward-slurp-sexp)
+              ("M-h" . sp-backward-slurp-sexp)))
+
 
 (use-package evil-smartparens
   :defer t
@@ -539,6 +655,15 @@
   :ensure t
   :defer t)
 
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :hook
+;;   ((python-mode . lsp)))
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :commands lsp-ui-mode)
+
 (eval-after-load 'python
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "--simple-prompt -i"))
@@ -564,3 +689,14 @@
           (kill-buffer))))))
 
 (global-set-key (kbd "C-c D")  #'delete-file-and-buffer)
+
+(require 'zone)
+(defun zone-choose (pgm)
+  "Choose a PGM to run for `zone'."
+  (interactive
+   (list
+    (completing-read
+     "Program: "
+     (mapcar 'symbol-name zone-programs))))
+  (let ((zone-programs (list (intern pgm))))
+    (zone)))

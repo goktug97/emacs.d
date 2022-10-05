@@ -1,0 +1,22 @@
+#+STARTUP: hideall showstars indent
+#+TAGS:    event(e) meeting(m) deadline(d)
+
+* Birthdays
+%%(org-anniversary 1976 6  1) Emacs is %d years old
+* Recurrent
+** Meeting 1                                                       :meeting:
+    SCHEDULED: <2022-10-04 Tue 12:00-13:00 +1w>
+** Meeting 2                                                       :meeting:
+    SCHEDULED: <2022-10-05 Wed 11:00-12:00 +1w>
+** Meeting 3                                                       :meeting:
+    SCHEDULED: <2022-10-06 Thu 10:00-11:00 +1w>
+** Meeting 4                                                       :meeting:
+    SCHEDULED: <2022-10-06 Thu 11:00-12:00 +1w>
+* Past
+* Future
+** Another meeting                                                 :meeting:
+<2022-10-05 Wed 13:00-13:45>
+** An event                                                          :event:
+<2022-10-06 Thu 10:00-10:30>
+** A deadline                                                     :deadline:
+<2022-10-17 Mon 17:00>
