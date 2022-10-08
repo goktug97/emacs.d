@@ -65,6 +65,8 @@
   :if (eq modal 'meow)
   :ensure t
   :init
+  :config
+  (add-to-list 'meow-keypad-start-keys '(?l . ?l))
   :preface
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -239,7 +241,7 @@
   :config
   (general-define-key
    :states (if (eq modal 'evil) '(normal visual insert emacs) nil)
-   :prefix (if (eq modal 'evil) "SPC" "M-g")
+   :prefix (if (eq modal 'evil) "SPC" "C-l")
    :no-autoload t
    :non-normal-prefix "M-SPC"
    "SPC" '(switch-to-previous-buffer :which-key "Toggle Buffer")
@@ -253,6 +255,7 @@
    "p" '(hydra-projectile-with-helm :which-key "Project")
    "f" '(helm-find-files :which-key "Find Files"))
   :preface
+    (general-auto-unbind-keys)
     (defun switch-to-previous-buffer ()
       (interactive)
       (switch-to-buffer (other-buffer (current-buffer) 1)))
