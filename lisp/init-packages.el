@@ -26,6 +26,8 @@
 
 (advice-add #'package--ensure-init-file :override #'ignore)
 
+(defconst modal 'evil)
+
 ;; M-x all-the-icons-install-fonts
 (use-package all-the-icons
   :defer t
@@ -59,7 +61,103 @@
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
+(use-package meow
+  :if (eq modal 'meow)
+  :ensure t
+  :init
+  :preface
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
+  :config
+  (meow-setup)
+  (meow-global-mode 1)
+  )
+
 (use-package evil
+  :if (eq modal 'evil)
   :ensure t
   :init
   (setq evil-search-module 'evil-search
@@ -81,6 +179,7 @@
   (evil-set-initial-state 'term-mode 'emacs))
 
 (use-package evil-collection
+  :if (eq modal 'evil)
   :after evil
   :ensure t
   :config
@@ -139,8 +238,8 @@
   :ensure t
   :config
   (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
+   ;; :states '(normal visual insert emacs)
+   :prefix (if (eq modal 'evil) "SPC" "M-g")
    :no-autoload t
    :non-normal-prefix "M-SPC"
    "SPC" '(switch-to-previous-buffer :which-key "Toggle Buffer")
@@ -173,7 +272,6 @@
   (general-define-key
     :states '(normal)
     "SPC o" '(ace-window :which-key "Change buffer"))
-  :bind (:map evil-normal-state-map ("M-o" . ace-window))
   :config
   (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
         aw-dispatch-alist
@@ -197,8 +295,9 @@
   :config
   (setq
     which-key-idle-secondary-delay 0
-    which-key-allow-evil-operators t
     which-key-show-operator-state-maps t)
+  (when (eq modal 'evil)
+    (setq which-key-allow-evil-operators t))
   (set-face-attribute 'which-key-local-map-description-face nil :weight 'bold)
   (which-key-setup-side-window-bottom))
 
@@ -365,6 +464,7 @@
   (defhydra hydra-gtd (:color blue)
     "GTD"
     ("a" org-agenda "Agenda")
+    ("A" org-archive-done-tasks "Archive")
     ("c" org-capture "Capture")
     ("C" hydra-org-clock/body "Org Clock")
     ("t" hydra-org-timestamp/body "Timestamp"))
@@ -497,6 +597,9 @@ See also `org-save-all-org-buffers'"
   (advice-add 'org-refile :after
               (lambda (&rest _)
                 (gtd-save-org-buffers)))
+  (defun org-archive-done-tasks ()
+    (interactive)
+    (org-map-entries 'org-archive-set-tag "/DONE" 'file))
   )
 
 (use-package ob-python
@@ -532,6 +635,7 @@ See also `org-save-all-org-buffers'"
   (pdf-tools-install))
 
 (use-package avy
+  :if (eq modal 'evil)
   :defer t
   :ensure t
   :after evil
@@ -553,7 +657,6 @@ See also `org-save-all-org-buffers'"
   (company-prescient-mode))
 
 (use-package magit
-  :after evil
   :defer t
   :ensure t)
 
@@ -598,43 +701,26 @@ See also `org-save-all-org-buffers'"
     :straight nil)
   (setq sp-python-insert-colon-in-function-definitions nil)
   (add-hook 'prog-mode-hook #'smartparens-mode)
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+  (when (eq modal 'evil)
+    (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+    )
   :bind (:map smartparens-mode-map
               ("M-l" . sp-forward-slurp-sexp)
               ("M-h" . sp-backward-slurp-sexp)))
 
-
 (use-package evil-smartparens
+  :if (eq modal 'evil)
   :defer t
   :ensure t
   :config
   (diminish 'evil-smartparens-mode))
-
-;; (use-package evil-surround
-;;   :ensure t
-;;   :config
-;;   (global-evil-surround-mode 1))
-
-;; (use-package paredit
-;;   :bind (:map paredit-mode-map
-;;               ("C-M-h" . paredit-forward-barf-sexp)
-;;               ("C-M-l" . paredit-forward-slurp-sexp))
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (autoload 'enable-paredit-mode "paredit" t)
-;;   (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-;;   (add-hook 'eval-expression-minibuffer-setup-hook
-;;             #'enable-paredit-mode)
-;;   (add-hook 'ielm-mode-hook #'enable-paredit-mode)
-;;   (add-hook 'lisp-mode-hook #'enable-paredit-mode)
-;;   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode))
 
 (use-package treemacs
   :defer t
   :ensure t)
 
 (use-package treemacs-evil
+  :if (eq modal 'evil)
   :after (treemacs evil)
   :ensure t)
 
