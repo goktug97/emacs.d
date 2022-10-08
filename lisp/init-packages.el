@@ -272,6 +272,7 @@
   (general-define-key
     :states '(normal)
     "SPC o" '(ace-window :which-key "Change buffer"))
+  :bind ("M-o" . ace-window)
   :config
   (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
         aw-dispatch-alist
