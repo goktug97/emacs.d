@@ -238,7 +238,7 @@
   :ensure t
   :config
   (general-define-key
-   ;; :states '(normal visual insert emacs)
+   :states (if (eq modal 'evil) '(normal visual insert emacs) nil)
    :prefix (if (eq modal 'evil) "SPC" "M-g")
    :no-autoload t
    :non-normal-prefix "M-SPC"
